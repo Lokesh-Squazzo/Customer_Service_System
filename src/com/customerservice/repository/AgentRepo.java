@@ -34,16 +34,20 @@ public class AgentRepo {
 
     public Integer agentId(String category){
         try{
-            PreparedStatement preparedStatement = connection.prepareStatement(
+            PreparedStatement selectStatement = connection.prepareStatement(
                     "SELECT * from agent where is_available = true AND skill = ?",
                     ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_READ_ONLY
             );
-            preparedStatement.setString(1,category);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            selectStatement.setString(1,category);
+            ResultSet resultSet = selectStatement.executeQuery();
             resultSet.beforeFirst();
             if(resultSet.next()) {
-                return resultSet.getInt("id");
+                int id = resultSet.getInt("id");
+                PreparedStatement updateStatement = connection.prepareStatement("UPDATE agent is_available=false where id = ?");
+                updateStatement.setInt(1,id);
+                updateStatement.executeQuery();
+                return id;
             }
 
         } catch (Exception e) {

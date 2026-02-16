@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class DbConnect {
+
+
     private static final String dbName = "data_base_name";
     private static final String port = "PORT";
     private static final String url = "jdbc:mysql://localhost:"+port+"/"+dbName;

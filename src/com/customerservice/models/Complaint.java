@@ -6,7 +6,7 @@ public class Complaint {
     private String category;
     private String description;
     private String status;
-
+    //Status: 'PENDING','IN_PROGRESS','RESOLVED'
     public Complaint(int customer_id, Integer agent_id, String category, String description) {
         this.customer_id = customer_id;
         this.agent_id = agent_id;
@@ -37,5 +37,14 @@ public class Complaint {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer Id: "+customer_id+" "+
+                "Agent Id: " +agent_id+" "+
+                "Complaint Category: " + category+" "+
+                ((description !=null)? description : "Description is Not Provided")+" "+
+                "Status of Complaint: "+status;
     }
 }

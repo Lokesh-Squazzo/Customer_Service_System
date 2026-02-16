@@ -4,7 +4,7 @@ public class Agent {
     private String name;
     private String skill;
     private String phone;
-    boolean is_available;
+    private boolean is_available;
 
     public Agent(String name, String phone, String skill) {
         this.name = name;

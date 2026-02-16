@@ -38,18 +38,24 @@ public class ComplaintRepo {
         List<Complaint> complaints = new ArrayList<>();
         try {
             PreparedStatement ps = connection.prepareStatement(
-                    "SELECT * FROM complaint"
+                    "SELECT * FROM complaint",
+                    ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY
             );
             ResultSet resultSet = ps.executeQuery();
             resultSet.beforeFirst();
 
             while (resultSet.next()){
-                complaints.add(new Complaint(
+
+                Complaint complaint =new Complaint(
                         resultSet.getInt("customer_id"),
                         resultSet.getInt("agent_id"),
                         resultSet.getString("category"),
                         resultSet.getString("description")
-                ));
+                );
+                complaint.setStatus(resultSet.getString("status"));
+
+                complaints.add(complaint);
             }
             return complaints;
         }catch (Exception e){

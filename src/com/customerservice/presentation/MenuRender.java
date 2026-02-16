@@ -3,6 +3,7 @@ package com.customerservice.presentation;
 import com.customerservice.services.CustomerService;
 
 public class MenuRender {
+    CustomerService customerService = new CustomerService();
     InputReader ir = new InputReader();
 
     public void mainMenu() {
@@ -11,7 +12,9 @@ public class MenuRender {
         System.out.println("2. File Complaint");
         System.out.println("3. Check Complaint Status");
         System.out.println("4. Check All Category");
-        System.out.println("5. Exit");
+        System.out.println("5. Get All Complaints");
+        System.out.println("6. Get All Customers");
+        System.out.println("7. Exit");
         int choice = this.ir.getInt();
         switch (choice) {
             case 1:
@@ -28,6 +31,12 @@ public class MenuRender {
                 this.checkAllCategoryMenu();
                 break;
             case 5:
+                customerService.getAllComplaints();
+                break;
+            case 6:
+                customerService.getAllCustomers();
+                break;
+            case 7:
                 System.exit(0);
                 break;
             default:
@@ -46,7 +55,7 @@ public class MenuRender {
         this.checkAllCategoryMenu();
         System.out.print("Enter Agent's Skill :- ");
         String skill = this.ir.getString();
-        CustomerService.addAgent(name, phone, skill);
+        customerService.addAgent(name, phone, skill);
     }
 
     private void addComplaintMenu() {
@@ -56,14 +65,14 @@ public class MenuRender {
         String name = this.ir.getString();
         System.out.print("Enter Phone Number :- ");
         String phone = this.ir.getString();
-        CustomerService.addCustomer(name, phone);
+        customerService.addCustomer(name, phone);
         System.out.println("----Complaint Details-----");
         this.checkAllCategoryMenu();
         System.out.print("Enter Category :- ");
         String category = this.ir.getString();
         System.out.print("Enter Description of Complaint :- ");
         String description = this.ir.getString();
-        CustomerService.filComplaint(CustomerService.getId(phone), CustomerService.agentId(category), category, description);
+        customerService.filComplaint(phone,category, description);
     }
 
     private void checkComplaintMenu() {
