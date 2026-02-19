@@ -14,7 +14,8 @@ public class MenuRender {
         System.out.println("4. Check All Category");
         System.out.println("5. Get All Complaints");
         System.out.println("6. Get All Customers");
-        System.out.println("7. Exit");
+        System.out.println("7. Refresh DataBase");
+        System.out.println("8. Exit");
         int choice = this.ir.getInt();
         switch (choice) {
             case 1:
@@ -37,6 +38,9 @@ public class MenuRender {
                 customerService.getAllCustomers();
                 break;
             case 7:
+                customerService.refreshDataBase();
+                break;
+            case 8:
                 System.exit(0);
                 break;
             default:
@@ -79,6 +83,7 @@ public class MenuRender {
         System.out.println("\n\n\n\n\n");
         System.out.print("Enter Phone Number: ");
         String phone = this.ir.getString();
+        System.out.println("The Current Status of Your Complaint is: "+customerService.getStatus(phone));
     }
 
     private void checkAllCategoryMenu() {

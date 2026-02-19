@@ -1,10 +1,14 @@
 package com.customerservice.services;
+import com.customerservice.dto.ComplaintStatus;
 import com.customerservice.models.Agent;
 import com.customerservice.models.Complaint;
 import com.customerservice.models.Customer;
 import com.customerservice.repository.AgentRepo;
 import com.customerservice.repository.ComplaintRepo;
 import com.customerservice.repository.CustomerRepo;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerService {
@@ -37,11 +41,62 @@ public class CustomerService {
             System.out.println(customer.toString());
 
     }
+
+    public void refreshDataBase(){
+        refreshInProgress();
+        refreshPending();
+
+    }
+
+    public void refreshInProgress(){
+        List<ComplaintStatus> complaintStatusList = complaintRepo.getInProgressStatus();
+        LocalDateTime currentTime = LocalDateTime.now();
+        if(! complaintStatusList.isEmpty()){
+            for (ComplaintStatus complaintStatus : complaintStatusList){
+                if(currentTime.isAfter(complaintStatus.getEstimated_resolution_time())){
+                    int i = complaintRepo.updateInProgress(
+                            complaintStatus.getId(),
+                            currentTime,
+                            agentRepo.getAgentName(
+                                    complaintStatus.getAgentId()
+                            )
+                    );
+                    if(i == 1){
+                        agentRepo.makeAgentFree(complaintStatus.getAgentId());
+                    }else{
+                        System.out.println("Not updated");
+                    }
+                }
+            }
+        }else{
+            System.out.println("No Record Found For In_Progress.....");
+        }
+    }
+
+    public void refreshPending(){
+        List<ComplaintStatus> complaintStatusList = complaintRepo.getPendingStatus();
+        if(!complaintStatusList.isEmpty()){
+            for (ComplaintStatus complaintStatus : complaintStatusList){
+                if(agentRepo.isAgentAvailable(complaintStatus.getCategory())){
+                    complaintRepo.updatePending(
+                            complaintStatus.getId(),
+                            agentRepo.agentId(complaintStatus.getCategory())
+                    );
+                }
+            }
+        }else {
+            System.out.println("No Records");
+        }
+    }
     public int getId(String phone) {
         return customerRepo.getId(phone);
     }
 
     public Integer agentId(String category) {
         return agentRepo.agentId(category);
+    }
+
+    public String getStatus(String phone){
+        return complaintRepo.getStatus(customerRepo.getId(phone));
     }
 }
