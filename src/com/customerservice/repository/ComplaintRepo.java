@@ -42,22 +42,6 @@ public class ComplaintRepo {
         return null;
     }
 
-    public int getAgentId(int id){
-        try{
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT agent_id from complaint where id = ?"
-            );
-            preparedStatement.setInt(1,id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.beforeFirst();
-            if (resultSet.next())
-                return resultSet.getInt("agent_id");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
     public String getStatus(int id){
         try{
             PreparedStatement preparedStatement = connection.prepareStatement(
@@ -95,7 +79,6 @@ public class ComplaintRepo {
                 complaintStatus.setCategory(resultSet.getString("category"));
                 complaintStatusList.add(complaintStatus);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -171,14 +154,19 @@ public class ComplaintRepo {
     public void fileComplaint(Complaint complaint){
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO complaint (customer_id,agent_id,category,description) VALUES(?,?,?,?)"
+                    "INSERT INTO complaint (customer_id,agent_id,category,description,status,estimated_resolution_time) " +
+                            "VALUES(?,?,?,?,?,?)"
             );
             preparedStatement.setInt(1,complaint.getCustomer_id());
 
             if(complaint.getAgent_id() != null){
                 preparedStatement.setInt(2,complaint.getAgent_id());
+                preparedStatement.setString(5,"IN_PROGRESS");
+                preparedStatement.setTimestamp(6,Timestamp.valueOf(LocalDateTime.now().plusSeconds(11)));
             }else {
                 preparedStatement.setNull(2, Types.INTEGER);
+                preparedStatement.setString(5,"PENDING");
+                preparedStatement.setNull(6,Types.TIMESTAMP);
             }
             preparedStatement.setString(3,complaint.getCategory());
             preparedStatement.setString(4, complaint.getDescription());
@@ -193,6 +181,22 @@ public class ComplaintRepo {
 
 
 }
+
+//public int getAgentId(int id){
+//    try{
+//        PreparedStatement preparedStatement = connection.prepareStatement(
+//                "SELECT agent_id from complaint where id = ?"
+//        );
+//        preparedStatement.setInt(1,id);
+//        ResultSet resultSet = preparedStatement.executeQuery();
+//        resultSet.beforeFirst();
+//        if (resultSet.next())
+//            return resultSet.getInt("agent_id");
+//    } catch (Exception e) {
+//        e.printStackTrace();
+//    }
+//    return 0;
+//}
 
 //    public List<ComplaintStatus> getAllStatus(){
 //        List<ComplaintStatus> complaintStatusList = new ArrayList<>();

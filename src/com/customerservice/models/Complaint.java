@@ -12,7 +12,6 @@ public class Complaint {
         this.agent_id = agent_id;
         this.category = category;
         this.description = description;
-        this.status = status;
         this.resolved_by="Not Resolved Yet.";
     }
 

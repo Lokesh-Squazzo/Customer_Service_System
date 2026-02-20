@@ -75,10 +75,11 @@ public class CustomerService {
 
     public void refreshPending(){
         List<ComplaintStatus> complaintStatusList = complaintRepo.getPendingStatus();
+        int updateCount=0;
         if(!complaintStatusList.isEmpty()){
             for (ComplaintStatus complaintStatus : complaintStatusList){
                 if(agentRepo.isAgentAvailable(complaintStatus.getCategory())){
-                    complaintRepo.updatePending(
+                    updateCount+=complaintRepo.updatePending(
                             complaintStatus.getId(),
                             agentRepo.agentId(complaintStatus.getCategory())
                     );
